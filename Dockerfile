@@ -35,9 +35,11 @@ WORKDIR /var/www/html
 RUN mkdir -p /var/www/html/storage /var/www/html/bootstrap/cache \
     && chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Устанавливаем права для 1Password CLI
-RUN mkdir -p /var/www/.config/op \
+# Устанавливаем права для 1Password CLI и создаем необходимые папки
+RUN mkdir -p /var/www/.config/op /var/www/.npm /var/www/.composer \
     && chown -R www-data:www-data /var/www/.config \
+    && chown -R www-data:www-data /var/www/.npm \
+    && chown -R www-data:www-data /var/www/.composer \
     && chmod 700 /var/www/.config
 
 # Копируем и устанавливаем зависимости Laravel (если уже есть проект)

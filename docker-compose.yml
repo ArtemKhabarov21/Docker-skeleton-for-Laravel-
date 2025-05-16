@@ -13,7 +13,7 @@ services:
       - ./laravel-app:/var/www/html
       - ./laravel-app/storage:/var/www/html/storage
       - ./laravel-app/vendor:/var/www/html/vendor
-      - ./laravel-app/node_modules:/var/www/html/node_modules
+      # Убираем отдельное монтирование node_modules - пусть создается внутри контейнера
     networks:
       - laravel-network
 
