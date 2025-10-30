@@ -5,17 +5,23 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: laravel-app
+    image: laravel-app:latest
     container_name: laravel-app
     restart: unless-stopped
     working_dir: /var/www/html
+    environment:
+      PHP_IDE_CONFIG: serverName=laravel-app
+      APP_DEBUG: "true"
     volumes:
       - ./laravel-app:/var/www/html
       - ./laravel-app/storage:/var/www/html/storage
-      - ./laravel-app/vendor:/var/www/html/vendor
-      - ./laravel-app/node_modules:/var/www/html/node_modules
+      - /var/www/html/vendor
+      - /var/www/html/node_modules
+      - app-cache:/var/www/.npm
     networks:
       - laravel-network
+    depends_on:
+      - db
 
   webserver:
     image: nginx:alpine
@@ -46,9 +52,17 @@ services:
       - dbdata-laravel:/var/lib/mysql
     networks:
       - laravel-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
 
 volumes:
   dbdata-laravel:
+    driver: local
+  app-cache:
+    driver: local
 
 networks:
   laravel-network:
+    driver: bridge
